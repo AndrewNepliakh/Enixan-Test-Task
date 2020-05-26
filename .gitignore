@@ -2,13 +2,13 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
-/[Ll]ibrary/
-/[Tt]emp/
-/[Oo]bj/
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ogs/
-/[Mm]emoryCaptures/
+Enixan Test Task/[Ll]ibrary/
+Enixan Test Task/[Tt]emp/
+Enixan Test Task/[Oo]bj/
+Enixan Test Task/[Bb]uild/
+Enixan Test Task/[Bb]uilds/
+Enixan Test Task/[Ll]ogs/
+Enixan Test Task/[Mm]emoryCaptures/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta

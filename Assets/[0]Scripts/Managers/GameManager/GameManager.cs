@@ -1,17 +1,33 @@
-﻿using UnityEngine;
+﻿using Interfaces;
+using UnityEngine;
 
 
-[CreateAssetMenu(menuName = "GameManager", fileName = "GameManager")]
-public class GameManager : BaseInjectable, IStart, IDisable
+[CreateAssetMenu(fileName = "GameManager", menuName = "Managers/GameManager")]
+public class GameManager : BaseInjectable, IAwake, IStart, IDisable
 {
-
+    private int _currentLevel = 0;
+    
     private LevelData _levelData;
     private ItemData _itemData;
-    
-    public void OnStart()
+
+    private GridController _gridController;
+    private EnvironmentItemsController _environmentItemsController;
+
+    public int CurrentLevel => _currentLevel;
+
+
+    public void OnAwake()
     {
         _itemData = InjectBox.Get<ItemData>();
         _levelData = InjectBox.Get<LevelData>();
+        
+        _gridController = new GridController();
+        _environmentItemsController = new EnvironmentItemsController();
+    }
+    
+    public void OnStart()
+    {
+        BuildEnvironmentItemsSet();
     }
 
     public void LocalDisable()
@@ -21,6 +37,7 @@ public class GameManager : BaseInjectable, IStart, IDisable
 
     private void BuildEnvironmentItemsSet()
     {
-        
+        _gridController.BuildGrid();
+        _environmentItemsController.BuildEnvironment();
     }
-}
+} 

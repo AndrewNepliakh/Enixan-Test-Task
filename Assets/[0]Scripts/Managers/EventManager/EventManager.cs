@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EventManager", menuName = "EventManager")]
+[CreateAssetMenu(fileName = "EventManager", menuName = "Managers/EventManager")]
 public class EventManager : BaseInjectable
 {
     private static Dictionary<Type, object> _eventDictionary = new Dictionary<Type, object>();

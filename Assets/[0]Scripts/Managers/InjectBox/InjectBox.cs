@@ -23,6 +23,14 @@ public class InjectBox : Singleton<InjectBox>
 
         foreach (var injectable in injectablesList)
         {
+            if (injectable is IAwake)
+            {
+                ((IAwake)injectable).OnAwake();
+            }
+        }
+        
+        foreach (var injectable in injectablesList)
+        {
             if (injectable is IStart)
             {
                 ((IStart)injectable).OnStart();

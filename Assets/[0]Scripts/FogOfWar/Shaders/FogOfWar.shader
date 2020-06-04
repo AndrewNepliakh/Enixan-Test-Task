@@ -7,6 +7,7 @@ Shader "Custom/FogOfWar"
 		_Color ("Main color", Color) = (1,1,1,1)
 		_FogRadius ("Fog Radius", Range(0, 25) ) = 5.0
         _FogFeather("Fog Feather", Range(0, 1)) = 0.5
+        _Position ("Position", Vector) = (0,0,0,1)
 	}
 
 	SubShader
@@ -28,6 +29,7 @@ Shader "Custom/FogOfWar"
 			float _FogRadius;
             float _FogFeather;
 			float4 _ItemsPos[300];
+			float4  _Position;
 			int _ItemsCount = 0;
 
 			struct Input
@@ -43,7 +45,7 @@ Shader "Custom/FogOfWar"
 
 			void Vert(inout appdata_full v, out Input o)
 			{
-				fixed4 posWorld = UnityObjectToClipPos(v.vertex);
+				fixed4 posWorld = mul(unity_ObjectToWorld, v.vertex);
 				o.location = posWorld;
 			}
 
@@ -52,12 +54,16 @@ Shader "Custom/FogOfWar"
 				 fixed4 baseColor = _Color;
 				 o.Albedo = baseColor.rgb;
 				 
-				 float allAlphaPerPositions = 1.0;
+				 /*float allAlphaPerPositions = 1.0;
 				 for(int i = 0; i < _ItemsCount; i ++)
 				 {
-				    allAlphaPerPositions *= clamp(AlphaAreaForPos(IN, _ItemsPos[i]), 0, 1);
+				    allAlphaPerPositions *= clamp(AlphaAreaForPos(IN, _Position), 0, 1);
 				 }
-				 o.Alpha = allAlphaPerPositions * 0.9;
+				 o.Alpha = allAlphaPerPositions;*/
+				 
+				 float allAlphaPerPositions = 1.0;
+				 allAlphaPerPositions *= clamp(AlphaAreaForPos(IN, _Position), 0, 1);
+				 o.Alpha = allAlphaPerPositions;
 			}
 			
 		ENDCG

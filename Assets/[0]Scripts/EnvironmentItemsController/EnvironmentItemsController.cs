@@ -7,6 +7,7 @@ public class EnvironmentItemsController
 {
     private List<ItemModel> _itemModels;
     private Transform _environmentParent;
+    private int _randomSeed = 2;
 
     private GameManager _gameManager;
     private ItemData _itemData;
@@ -34,18 +35,22 @@ public class EnvironmentItemsController
             for (int j = 0; j < _levelData.GroundSize; j++)
             {
                 var itemPrefab = allPrefabs[Random.Range(0, allPrefabs.Count)];
-                var item = _poolManager.Instantiate<Item>(itemPrefab);
-                item.SetPosition(_levelData.GroundZeroPoint.x + i, _levelData.GroundZeroPoint.z + j);
-                item.transform.SetParent(_environmentParent);
+                var randomSeed = Random.Range(0, _randomSeed);
 
-                foreach (var position in gridArea)
+                if (randomSeed == 0)
                 {
-                    if (position == item.transform.position)
+                    var item = _poolManager.Instantiate<Item>(itemPrefab);
+                    item.SetPosition(_levelData.GroundZeroPoint.x + i, _levelData.GroundZeroPoint.z + j);
+                    item.transform.SetParent(_environmentParent);
+
+                    foreach (var position in gridArea)
                     {
-                        _poolManager.Deactivate(item);
+                        if (position == item.transform.position)
+                        {
+                            _poolManager.Deactivate(item);
+                        }
                     }
                 }
-
             }
         }
     }
@@ -54,10 +59,13 @@ public class EnvironmentItemsController
     {
         var gridSize = _levelData.GetSize(_gameManager.CurrentLevel);
         var list = new List<Vector3>();
+
+        var x = (2.0f - gridSize.HeightSize * 0.1f) *  5.0f;
+        var z = (2.0f - gridSize.WidthSize * 0.1f) *  5.0f;
         
-        for (int i = 0; i < gridSize.HeightSize; i++)
+        for (var i = (int)x - 1 ; i < gridSize.HeightSize + ((int)x + 1); i++)
         {
-            for (int j = 0; j < gridSize.WidthSize; j++)
+            for (var j = (int)z - 1 ; j < gridSize.WidthSize + ((int)z + 1); j++)
             {
                 var vector = new Vector3{x = i, z = j};
                 list.Add(vector);

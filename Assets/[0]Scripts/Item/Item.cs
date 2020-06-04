@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoEntity, IPoolable
+public class Item : MonoBehaviour, IPoolable
 {
    [SerializeField] private eItemID _id;
 

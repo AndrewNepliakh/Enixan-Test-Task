@@ -61,9 +61,9 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _FogFeather: 0.5
+    - _FogFeather: 0.129
     - _FogMaxRadius: 1.95
-    - _FogRadius: 5
+    - _FogRadius: 15.3
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -83,3 +83,4 @@ Material:
     - _Color: {r: 0.24483801, g: 0.33076113, b: 0.3962264, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _PlayerPos: {r: 8.9, g: 0, b: 0.15, a: 1}
+    - _Position: {r: 10, g: 0, b: 10, a: 1}

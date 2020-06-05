@@ -22,13 +22,15 @@ public class EnvironmentItemsController
         _poolManager = InjectBox.Get<PoolManager>();
 
         _itemModels = _itemData.ItemModels;
-        _environmentParent = GameObject.Find("GroundPlane").GetComponent<Transform>();
+        _environmentParent = GameObject.Find("Environment").GetComponent<Transform>();
     }
 
     public void BuildEnvironment()
     {
         var allPrefabs = _itemModels.Select(x => x.Prefab).ToList();
         var gridArea = DefineGridArea();
+
+        var poolSize = (int)_levelData.GroundSize * (int)_levelData.GroundSize;
         
         for (int i = 0; i < _levelData.GroundSize; i++)
         {
@@ -39,9 +41,8 @@ public class EnvironmentItemsController
 
                 if (randomSeed == 0)
                 {
-                    var item = _poolManager.Instantiate<Item>(itemPrefab);
+                    var item = _poolManager.Create<Item>(itemPrefab, _environmentParent, poolSize);
                     item.SetPosition(_levelData.GroundZeroPoint.x + i, _levelData.GroundZeroPoint.z + j);
-                    item.transform.SetParent(_environmentParent);
 
                     foreach (var position in gridArea)
                     {

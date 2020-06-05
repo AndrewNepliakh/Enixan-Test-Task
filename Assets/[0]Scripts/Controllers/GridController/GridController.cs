@@ -27,14 +27,14 @@ public class GridController
 
     public void BuildGrid()
     {
+        var poolSize = (int) _gridSize.HeightSize * (int) _gridSize.WidthSize;
         
         for (int i = 0; i < _gridSize.HeightSize; i++)
         {
             for (int j = 0; j < _gridSize.WidthSize; j++)
             {
-                var cell = _poolManager.Instantiate<Cell>(_cellPrefab);
+                var cell = _poolManager.Create<Cell>(_cellPrefab, _gridParent, poolSize);
                 cell.SetPosition(i, j);
-                cell.transform.SetParent(_gridParent);
                 _cells.Add(cell);
             }
         }
@@ -51,5 +51,10 @@ public class GridController
         };
 
         _gridParent.transform.position = position;
+    }
+
+    public void SwitchGrid(bool isActive)
+    {
+        _gridParent.gameObject.SetActive(isActive);
     }
 }

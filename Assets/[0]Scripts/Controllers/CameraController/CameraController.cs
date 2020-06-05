@@ -2,21 +2,25 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CameraHandler : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     private Camera _camera;
     private readonly Vector3 _startCameraPosition = new Vector3(10.0f, 35.0f, -8.0f);
-    
+
     private float _zoomModifierSpeed = 0.05f;
     private float _yMin = 5.0f;
     private float _yMax = 35.0f;
+    
+    private bool _isSwipeLocked;
+    private Vector3 _cameraPosition;
 
-    public TextMeshProUGUI _text1; 
-    public TextMeshProUGUI _text2; 
-    public TextMeshProUGUI _text3; 
-    public TextMeshProUGUI _text4; 
+    public TextMeshProUGUI _text1;
+    public TextMeshProUGUI _text2;
+    public TextMeshProUGUI _text3;
+    public TextMeshProUGUI _text4;
 
     private void Start()
     {
@@ -29,7 +33,7 @@ public class CameraHandler : MonoBehaviour
 #if UNITY_EDITOR
         MouseMovementCamera();
 #endif
-        
+
 #if UNITY_ANDROID && !UNITY_EDITOR
         TouchMovementCamera();
 #endif
@@ -41,7 +45,15 @@ public class CameraHandler : MonoBehaviour
         float deltaZ;
         float axisY = Input.mouseScrollDelta.y;
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
+        {
+            if(EventSystem.current.IsPointerOverGameObject()) _isSwipeLocked = true;
+            if(!EventSystem.current.IsPointerOverGameObject()) _isSwipeLocked = false;
+        }
+        
+        if (Input.GetMouseButtonUp(0)) _isSwipeLocked = false;
+
+        if (Input.GetMouseButton(0) && !_isSwipeLocked)
         {
             deltaX = Input.GetAxis("Mouse X");
             deltaZ = Input.GetAxis("Mouse Y");
@@ -50,12 +62,12 @@ public class CameraHandler : MonoBehaviour
 
             SetClampCoordinates(axisY);
         }
-        else
+        else if(!_isSwipeLocked)
         {
             SetClampCoordinates(axisY);
         }
     }
-    
+
     private void SetClampCoordinates(float axisY)
     {
         var pos = _camera.transform.position;
@@ -69,35 +81,35 @@ public class CameraHandler : MonoBehaviour
     {
         _text4.text = "Touch count: " + Input.touchCount;
 
-        if (Input.touchCount == 1)
+        if (Input.touchCount == 1 && EventSystem.current.IsPointerOverGameObject())
         {
             var firstTouch = Input.GetTouch(0);
-            
+
             var deltaX = -firstTouch.deltaPosition.x / 2.0f * Time.deltaTime;
             var deltaZ = -firstTouch.deltaPosition.y / 2.0f * Time.deltaTime;
             var pos = _camera.transform.position;
             _camera.transform.position += new Vector3(deltaX, 0.0f, deltaZ);
-            
+
             _text1.text = "Camera position: " + _camera.transform.position;
             _text2.text = "Delta X: " + deltaX;
             _text3.text = "Delta Y: " + deltaZ;
-            
+
             SetClampCoordinates(0.0f);
         }
-        
-        if (Input.touchCount == 2)
+
+        if (Input.touchCount == 2 && EventSystem.current.IsPointerOverGameObject())
         {
             var firstTouch = Input.GetTouch(0);
             var secondTouch = Input.GetTouch(1);
-            
+
             var firstTouchPrevPos = firstTouch.position - firstTouch.deltaPosition;
             var secondTouchPrevPos = secondTouch.position - secondTouch.deltaPosition;
-        
+
             var touchesPrevPosDifference = (firstTouchPrevPos - secondTouchPrevPos).magnitude;
             var touchesCurPosDifference = (firstTouch.position - secondTouch.position).magnitude;
-            
+
             var zoomModifier = (firstTouch.deltaPosition - secondTouch.deltaPosition).magnitude * _zoomModifierSpeed;
-            
+
             if (touchesPrevPosDifference > touchesCurPosDifference)
             {
                 var Ypos = _camera.transform.localPosition.y;
@@ -105,7 +117,7 @@ public class CameraHandler : MonoBehaviour
                 var pos = _camera.transform.position;
                 _camera.transform.localPosition = new Vector3(pos.x, Mathf.Clamp(Ypos, _yMin, _yMax), pos.z);
             }
-            
+
             if (touchesPrevPosDifference < touchesCurPosDifference)
             {
                 var Ypos = _camera.transform.localPosition.y;

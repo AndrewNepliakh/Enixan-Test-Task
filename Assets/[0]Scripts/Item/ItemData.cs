@@ -17,4 +17,14 @@ public class ItemModel
 public class ItemData : BaseInjectable
 {
     public List<ItemModel> ItemModels;
+
+    public Sprite GetItemIcon(eItemID id)
+    {
+        return ItemModels.Find(x => x.ID == id).Icon;
+    }
+
+    public GameObject GetItemPrefab(eItemID id)
+    {
+        return ItemModels.Find(x => x.ID == id).Prefab;
+    }
 }

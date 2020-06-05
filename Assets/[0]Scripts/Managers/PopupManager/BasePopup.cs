@@ -2,8 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-abstract class BasePopup
+public abstract class BasePopup : MonoBehaviour, IPoolable
 {
-    public abstract void Show();
-    public abstract void Close();
+    protected PoolManager PoolManager;
+    protected EventManager EventManager;
+    protected PopupManager PopupManager;
+    public void Show(object obj = null)
+    {
+        PoolManager = InjectBox.Get<PoolManager>();
+        EventManager = InjectBox.Get<EventManager>();
+        PopupManager = InjectBox.Get<PopupManager>();
+        
+        
+        OnShow(obj);
+    }
+
+    public void Close()
+    {
+        OnClose();
+    }
+
+    
+    protected virtual void OnShow(object obj = null){}
+    protected virtual void OnClose(){}
+
+    public virtual void OnActivate(object argument = default)
+    {
+        gameObject.SetActive(true);
+    }
+
+    public virtual void OnDeactivate(object argument = default)
+    {
+        gameObject.SetActive(false);
+    }
+
 }

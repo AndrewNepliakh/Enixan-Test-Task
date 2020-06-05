@@ -8,7 +8,7 @@ public class PoolManager : BaseInjectable
 {
     private static Dictionary<Type,Pool> _pools = new Dictionary<Type, Pool>();
     private GameObject _poolsGO;
-    public void AddPool(Type type)
+    public void AddPool(Type type, int poolSize = 0)
     {
          if(_poolsGO == null) _poolsGO = GameObject.Find("[POOLS]") ?? new GameObject("[POOLS]");
         
@@ -17,7 +17,7 @@ public class PoolManager : BaseInjectable
             var poolGO = new GameObject("Pool: " + type.ToString().ToUpper());
             poolGO.transform.SetParent(_poolsGO.transform);
             var pool = poolGO.AddComponent<Pool>();
-            pool.InitPool(poolGO.transform, 2500);
+            pool.InitPool(poolGO.transform, poolSize);
             _pools.Add(type, pool);
         }
     }
@@ -32,10 +32,10 @@ public class PoolManager : BaseInjectable
         return null;
     }
 
-    public T Instantiate<T>(GameObject prefab) where T : MonoBehaviour, IPoolable
+    public T Create<T>(GameObject prefab, Transform parent,int poolSize = 0) where T : MonoBehaviour, IPoolable
     {
-        AddPool(typeof(T));
-        return GetPool(typeof(T)).Spawn<T>(prefab);
+        AddPool(typeof(T), poolSize);
+        return GetPool(typeof(T)).Spawn<T>(prefab, parent);
     }
 
     public void Deactivate<T>(T poolable) where T : MonoBehaviour, IPoolable

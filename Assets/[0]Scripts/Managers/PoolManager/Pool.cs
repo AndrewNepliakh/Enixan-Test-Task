@@ -12,22 +12,25 @@ public class Pool : MonoBehaviour
         _pool = new Queue<IPoolable>(size);
     }
 
-    public T Spawn<T>(GameObject prefab) where T : MonoBehaviour, IPoolable
+    public T Spawn<T>(GameObject prefab, Transform parent) where T : MonoBehaviour, IPoolable
     {
-        var go = Instantiate(prefab);
-        var script = go.AddComponent<T>();
-        return script;
+        var go = Instantiate(prefab, parent);
+        return go.GetComponent<T>();
     }
 
-    public void Activate()
+    public T Activate<T>() where T : IPoolable
     {
-      
+        var poolable = (T)_pool.Dequeue();
+        poolable.OnActivate();
+        Debug.Log("Activate");
+        return poolable;
     }
 
     public void Deactivate<T>(T obj) where T : MonoBehaviour, IPoolable
     {
-        obj.transform.SetParent(transform);
         _pool.Enqueue(obj);
         obj.OnDeactivate();
+        
+        Debug.Log("Deactivate");
     }
 }

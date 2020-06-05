@@ -10,11 +10,6 @@ public class InjectBox : Singleton<InjectBox>
     public static void Add(object obj)
     {
         Instance._injectables.Add(obj.GetType(), obj);
-
-        if (obj is IAwake)
-        {
-            (obj as IAwake).OnAwake();
-        }
     }
 
     public static void InitializeStartInjectables()
